@@ -7,7 +7,7 @@ type Props = {
 
 const HydrationTestParent = (props: Props) => {
   return (
-    <div className="p-20 w-full bg-green-400">HydrationTestParent : {props.text}
+    <div className="p-20 text-4xl w-full bg-green-400">Parent : {props.text}
       <HydrationTestChild text={props.text} />
     </div>
   )

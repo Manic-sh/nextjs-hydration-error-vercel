@@ -6,8 +6,8 @@ type Props = {
 
 const HydrationTestChild = (props: Props) => {
   return (
-    <div className="p-20 w-full bg-red-400">
-      HydrationTestChild : {props.text}
+    <div className="p-20 text-4xl mt-20 w-full bg-red-400">
+      Child : {props.text}
     </div>
   )
 }
