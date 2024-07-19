@@ -9,7 +9,13 @@ interface PageProps {
     page: string[];
   };
 }
-
+const myData = {
+  content: {
+    data: {
+      example: "your text here a"
+    }
+  }
+};
 export default async function Page(props: PageProps) {
   const builderModelName = "page";
 
@@ -28,7 +34,8 @@ export default async function Page(props: PageProps) {
   return (
     <>
       {/* Render the Builder page */}
-      <RenderBuilderContent data={{ content }} content={content} model={builderModelName} />
+      
+      <RenderBuilderContent data={{ myData}} content={content} model={builderModelName} />
     </>
   );
 }

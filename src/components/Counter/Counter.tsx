@@ -4,9 +4,10 @@ import styles from "./styles.module.css";
 
 interface CounterProps {
   initialCount?: number;
+  code?: any;
 }
 
-function Counter({ initialCount = 99 }: CounterProps) {
+function Counter({ initialCount = 99, code }: CounterProps) {
   const [count, setCount] = useState(initialCount);
 
   const increment = () => {
@@ -26,6 +27,8 @@ function Counter({ initialCount = 99 }: CounterProps) {
       <button className={styles.btn} onClick={increment}>
         +
       </button>
+
+      <div>{code}</div>
     </div>
   );
 }
