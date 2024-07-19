@@ -12,7 +12,9 @@ type NavItem = {
 
 type HeaderNavigationProps = {
   navItems: NavItem[];
+  logo: string;
 };
+
 
 const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ navItems, logo }) => {
   return (
