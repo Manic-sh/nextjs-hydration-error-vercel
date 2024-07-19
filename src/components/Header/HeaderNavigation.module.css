@@ -1,0 +1,39 @@
+/* components/HeaderNavigation.module.css */
+
+.headerNavigation {
+    background-color: #333;
+    padding: 1rem;
+  }
+  
+  .navContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navList {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+  }
+  
+  .navItem {
+    margin-right: 1rem;
+  }
+  
+  .navLink {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .navLink:hover {
+    text-decoration: underline;
+  }
+  

@@ -2,6 +2,7 @@
 import { builder, Builder } from "@builder.io/react";
 import HydrationTestParent from "./components/HydrationTestParent";
 import Counter from "./components/Counter/Counter";
+import HeaderNavigation from "./components/Header/HeaderNavigation";
 
 builder.init(process.env.NEXT_PUBLIC_BUILDER_API_KEY!);
 
@@ -44,7 +45,7 @@ Builder.registerComponent("FAQ", {
       defaultValue: [{ reviewText: "hello" }],
       subFields: [
         {
-          name: "reviewText",
+          name: "navItems",
           type: "string",
           defaultValue: '"You are the best"',
         },
@@ -63,5 +64,32 @@ Builder.registerComponent("FAQ", {
         },
       ],
     },
+  ],
+});
+
+Builder.registerComponent(HeaderNavigation, {
+  name: "HeaderNavigation",
+  inputs: [
+    {
+      name: "navItems",
+      type: "list",
+      defaultValue: [{ label: "Title", path: "/" }],
+      subFields: [
+        {
+          name: "label",
+          type: "string",
+          defaultValue: 'Home',
+        },
+        {
+          name: "path",
+          type: "string",
+          defaultValue: "/",
+        },
+      ],
+    },
+    {
+      name: "logo",
+      type: "file",
+    }
   ],
 });
