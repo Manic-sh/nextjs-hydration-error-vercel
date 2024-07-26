@@ -51,7 +51,7 @@ export default async function Page(props: PageProps) {
   return (
     <>
       {/* Render the Builder page */}
-      <Event content={page} />
+      <Event content={content} />
       <RenderBuilderContent content={content} model={builderModelName} />
     </>
   );
