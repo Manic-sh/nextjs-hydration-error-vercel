@@ -12,9 +12,11 @@ interface DataItem {
   };
 }
 
-const FAQ = ({ data }) => {
+interface FAQProps {
+  data: DataItem[] | null;
+}
 
-  console.log("🚀 ~ FAQ ~ data:", data);
+const FAQ: React.FC<FAQProps> = ({ data }) => {
 
   if (!data) {
     return <div>Loading...</div>;
