@@ -40,17 +40,6 @@ Builder.registerComponent(Counter, {
           type: "richText",
         },
       ],
-      onChange: (options) => {
-        const myVal = options.get('myVal');
-        if (myVal.length < 2) {
-          alert('Minimum items is 2, add items to continue.');
-          // Re-add removed item to ensure minimum of 2
-          while (myVal.length < 2) {
-            myVal.push({ subfieldText: "" });
-          }
-          options.set('myVal', myVal);
-        }
-      },
     },
   ],
 });
