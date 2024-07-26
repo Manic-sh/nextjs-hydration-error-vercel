@@ -5,9 +5,10 @@ import styles from "./styles.module.css";
 interface CounterProps {
   initialCount?: number;
   code?: any;
+  myVal?: any;
 }
 
-function Counter({ initialCount = 99, code }: CounterProps) {
+function Counter({ initialCount = 99, code, myVal }: CounterProps) {
   const [count, setCount] = useState(initialCount);
 
   const increment = () => {
@@ -29,6 +30,9 @@ function Counter({ initialCount = 99, code }: CounterProps) {
       </button>
 
       <div>{code}</div>
+      {myVal?.map((el: any) => {
+        <div>{el.subfieldText}</div>;
+      })}
     </div>
   );
 }

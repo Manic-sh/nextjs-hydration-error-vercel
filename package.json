@@ -12,6 +12,7 @@
     "@builder.io/dev-tools": "^1.0.12",
     "@builder.io/react": "^4.0.0",
     "@builder.io/sdk": "^2.2.2",
+    "@builder.io/utils": "^1.1.22",
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18"

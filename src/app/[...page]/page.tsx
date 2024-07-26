@@ -1,5 +1,7 @@
 import { builder } from "@builder.io/sdk";
 import { RenderBuilderContent } from "../../components/builder";
+import { getAsyncProps } from "@builder.io/utils";
+import Event from '../../components/HeroComponent/HeroComponent';
 
 // Builder Public API Key set in .env file
 builder.init(process.env.NEXT_PUBLIC_BUILDER_API_KEY!);
@@ -12,9 +14,9 @@ interface PageProps {
 const myData = {
   content: {
     data: {
-      example: "your text here a"
-    }
-  }
+      example: "your text here a",
+    },
+  },
 };
 export default async function Page(props: PageProps) {
   const builderModelName = "page";
@@ -27,15 +29,30 @@ export default async function Page(props: PageProps) {
         // Use the page path specified in the URL to fetch the content
         urlPath: "/" + (props?.params?.page?.join("/") || ""),
       },
+      cachebust: true,
     })
     // Convert the result to a promise
     .toPromise();
 
+  // Fetch additional data and pass it to Builder using getAsyncProps
+  await getAsyncProps(content, {
+    async myData() {
+      const response = await fetch("https://api.restful-api.dev/objects", {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+      });
+      const faqData = await response.json();
+
+      return { faqData };
+    },
+  });
   return (
     <>
       {/* Render the Builder page */}
-      
-      <RenderBuilderContent data={{ myData}} content={content} model={builderModelName} />
+      <Event content={page} />
+      <RenderBuilderContent content={content} model={builderModelName} />
     </>
   );
 }
