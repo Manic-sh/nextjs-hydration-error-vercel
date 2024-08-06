@@ -14,7 +14,7 @@ const Event: React.FC<EventProps> = ({ content }) => {
   const isPreviewing = useIsPreviewing()
 
   return (
-    <BuilderContent model="page" content={content} options={{query: {id: 234 }}}>
+    <BuilderContent model="page" content={content}>
       {(data, loading, content) => {
         if (!isPreviewing && content?.data?.title) {
           console.log(window.location.href);
