@@ -17,6 +17,60 @@ Builder.registerComponent(HydrationTestParent, {
     },
   ],
 });
+Builder.registerComponent("carousel", {
+  name: "Carousel",
+  inputs: [
+    {
+      name: "Carousel",
+      type: "object",
+      folded: true, // This will collapse the object by default
+      defaultValue: {
+        text: "this is the default text input",
+        url: "http://www.cloudinary.com",
+        variant: "primary",
+      },
+      subFields: [
+        {
+          name: "text",
+          type: "string",
+          required: true,
+        },
+        {
+          name: "url",
+          type: "url",
+          required: true,
+        },
+        {
+          name: "variant",
+          type: "string",
+          enum: ["primary", "info", "dark", "light", "warning"],
+        },
+        {
+          name: "cloudinarySelection",
+          type: "boolean",
+          hideFromUI: true,
+          showIf: `(options) => { const url = options.get("url") return url && url.includes("cloudinary")}`,
+        },
+        {
+          name: "videoSettings",
+          type: "object",
+          showIf: `(options) => options.get('cloudinarySelection') === true`,
+          subFields: [
+            {
+              name: "resolution",
+              type: "string",
+              enum: ["1080p", "720p", "480p"],
+            },
+            {
+              name: "autoplay",
+              type: "boolean",
+            },
+          ],
+        },
+      ],
+    },
+  ],
+});
 
 Builder.registerComponent(Counter, {
   name: "Counter",
@@ -33,7 +87,10 @@ Builder.registerComponent(Counter, {
     {
       name: "myVal",
       type: "list",
-      defaultValue:[{subfieldText: "<h1>Helllo</h1>"}, {subfieldText: "<h1>Helllo</h1>" }],
+      defaultValue: [
+        { subfieldText: "<h1>Helllo</h1>" },
+        { subfieldText: "<h1>Helllo</h1>" },
+      ],
       subFields: [
         {
           name: "subfieldText",

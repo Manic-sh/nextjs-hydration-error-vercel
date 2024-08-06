@@ -1,7 +1,7 @@
 import { builder } from "@builder.io/sdk";
 import { RenderBuilderContent } from "../../components/builder";
 import { getAsyncProps } from "@builder.io/utils";
-import Event from '../../components/HeroComponent/HeroComponent';
+import Event from "../../components/HeroComponent/HeroComponent";
 
 // Builder Public API Key set in .env file
 builder.init(process.env.NEXT_PUBLIC_BUILDER_API_KEY!);
@@ -30,7 +30,6 @@ export default async function Page(props: PageProps) {
         urlPath: "/" + (props?.params?.page?.join("/") || ""),
       },
       cachebust: true,
-      query: { id: 123 },
     })
     // Convert the result to a promise
     .toPromise();
@@ -52,8 +51,11 @@ export default async function Page(props: PageProps) {
   return (
     <>
       {/* Render the Builder page */}
-      <Event content={content}/>
-      <RenderBuilderContent content={content} model={builderModelName} options={{query: {id: 123 }}} />
+      <Event content={content} />
+      <RenderBuilderContent
+        content={content}
+        model={builderModelName}
+      />
     </>
   );
 }
