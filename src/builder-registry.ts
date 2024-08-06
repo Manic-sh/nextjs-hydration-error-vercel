@@ -23,7 +23,6 @@ Builder.registerComponent("carousel", {
     {
       name: "Carousel",
       type: "object",
-      folded: true, // This will collapse the object by default
       defaultValue: {
         text: "this is the default text input",
         url: "http://www.cloudinary.com",
