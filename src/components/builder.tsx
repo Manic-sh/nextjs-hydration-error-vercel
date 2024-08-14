@@ -10,6 +10,10 @@ type BuilderPageProps = ComponentProps<typeof BuilderComponent>;
 // Builder Public API Key set in .env file
 builder.init(process.env.NEXT_PUBLIC_BUILDER_API_KEY!);
 
+builder.canTrack = true;
+
+//builder.track('Conversion');
+
 export function RenderBuilderContent({ content, model, data }: BuilderPageProps) {
   // Call the useIsPreviewing hook to determine if
   // the page is being previewed in Builder

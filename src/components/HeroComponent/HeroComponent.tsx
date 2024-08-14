@@ -17,7 +17,7 @@ const Event: React.FC<EventProps> = ({ content }) => {
     <BuilderContent model="page" content={content}>
       {(data, loading, content) => {
         if (!isPreviewing && content?.data?.title) {
-          console.log(window.location.href);
+          <h3>Loading....</h3>
         }
 
         return (
