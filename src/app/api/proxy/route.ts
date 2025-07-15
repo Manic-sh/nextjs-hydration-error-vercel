@@ -8,8 +8,24 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'URL parameter is required' }, { status: 400 });
   }
 
+  // Prevent circular reference - don't proxy requests to our own proxy
+  if (targetUrl.includes('/api/proxy')) {
+    return NextResponse.json({ error: 'Circular proxy reference detected' }, { status: 400 });
+  }
+
   try {
-    const response = await fetch(targetUrl, {
+    // Forward all query parameters from the original request to the target URL
+    const originalUrl = new URL(request.url);
+    const targetUrlObj = new URL(targetUrl);
+    
+    // Copy all query parameters except 'url' to the target URL
+    originalUrl.searchParams.forEach((value, key) => {
+      if (key !== 'url') {
+        targetUrlObj.searchParams.set(key, value);
+      }
+    });
+
+    const response = await fetch(targetUrlObj.toString(), {
       headers: {
         'x-vercel-set-bypass-cookie': 'samesitenone',
         'User-Agent': request.headers.get('user-agent') || '',
@@ -18,6 +34,9 @@ export async function GET(request: NextRequest) {
         'Accept-Encoding': request.headers.get('accept-encoding') || 'gzip, deflate, br',
         'Cache-Control': request.headers.get('cache-control') || 'no-cache',
         'Pragma': request.headers.get('pragma') || 'no-cache',
+        // Forward Builder.io specific headers
+        'Cookie': request.headers.get('cookie') || '',
+        'Referer': request.headers.get('referer') || '',
       },
     });
 
@@ -32,6 +51,7 @@ export async function GET(request: NextRequest) {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'X-Frame-Options': 'SAMEORIGIN',
       },
     });
   } catch (error) {
@@ -48,9 +68,26 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'URL parameter is required' }, { status: 400 });
   }
 
+  // Prevent circular reference
+  if (targetUrl.includes('/api/proxy')) {
+    return NextResponse.json({ error: 'Circular proxy reference detected' }, { status: 400 });
+  }
+
   try {
     const body = await request.text();
-    const response = await fetch(targetUrl, {
+    
+    // Forward all query parameters from the original request to the target URL
+    const originalUrl = new URL(request.url);
+    const targetUrlObj = new URL(targetUrl);
+    
+    // Copy all query parameters except 'url' to the target URL
+    originalUrl.searchParams.forEach((value, key) => {
+      if (key !== 'url') {
+        targetUrlObj.searchParams.set(key, value);
+      }
+    });
+
+    const response = await fetch(targetUrlObj.toString(), {
       method: 'POST',
       body,
       headers: {
@@ -60,6 +97,9 @@ export async function POST(request: NextRequest) {
         'Accept': request.headers.get('accept') || '*/*',
         'Accept-Language': request.headers.get('accept-language') || 'en-US,en;q=0.9',
         'Accept-Encoding': request.headers.get('accept-encoding') || 'gzip, deflate, br',
+        // Forward Builder.io specific headers
+        'Cookie': request.headers.get('cookie') || '',
+        'Referer': request.headers.get('referer') || '',
       },
     });
 
@@ -74,6 +114,7 @@ export async function POST(request: NextRequest) {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'X-Frame-Options': 'SAMEORIGIN',
       },
     });
   } catch (error) {
