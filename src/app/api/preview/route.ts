@@ -2,36 +2,21 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const targetUrl = searchParams.get('url');
-
-  if (!targetUrl) {
-    return NextResponse.json({ error: 'URL parameter is required' }, { status: 400 });
-  }
-
-  // Prevent circular reference - don't proxy requests to our own proxy
-  if (targetUrl.includes('/api/proxy')) {
-    return NextResponse.json({ error: 'Circular proxy reference detected' }, { status: 400 });
-  }
-
+  
+  // Get the path from the URL or use a default
+  const path = searchParams.get('path') || '/';
+  
+  // Construct the target URL for your Vercel deployment
+  const targetUrl = `https://nextjs-hydration-error-vercel-40x0pie45.vercel.app${path}`;
+  
   try {
-    // Forward all query parameters from the original request to the target URL
-    const originalUrl = new URL(request.url);
-    const targetUrlObj = new URL(targetUrl);
-    
-    // Copy all query parameters except 'url' to the target URL
-    originalUrl.searchParams.forEach((value, key) => {
-      if (key !== 'url') {
-        targetUrlObj.searchParams.set(key, value);
-      }
-    });
-
     // Create headers for the target request
     const targetHeaders = new Headers();
     targetHeaders.set('x-vercel-set-bypass-cookie', 'samesitenone');
-    targetHeaders.set('User-Agent', request.headers.get('user-agent') || '');
-    targetHeaders.set('Accept', request.headers.get('accept') || '*/*');
-    targetHeaders.set('Accept-Language', request.headers.get('accept-language') || 'en-US,en;q=0.9');
-    targetHeaders.set('Accept-Encoding', request.headers.get('accept-encoding') || 'gzip, deflate, br');
+    targetHeaders.set('User-Agent', request.headers.get('user-agent') || 'Mozilla/5.0 (compatible; Builder.io/1.0)');
+    targetHeaders.set('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8');
+    targetHeaders.set('Accept-Language', 'en-US,en;q=0.5');
+    targetHeaders.set('Accept-Encoding', 'gzip, deflate, br');
     targetHeaders.set('Cache-Control', 'no-cache');
     targetHeaders.set('Pragma', 'no-cache');
     
@@ -46,16 +31,28 @@ export async function GET(request: NextRequest) {
       targetHeaders.set('Referer', referer);
     }
 
+    // Add all Builder.io query parameters to the target URL
+    const targetUrlObj = new URL(targetUrl);
+    searchParams.forEach((value, key) => {
+      if (key !== 'path') {
+        targetUrlObj.searchParams.set(key, value);
+      }
+    });
+
+    console.log('Fetching:', targetUrlObj.toString());
+
     const response = await fetch(targetUrlObj.toString(), {
       headers: targetHeaders,
     });
 
+    console.log('Response status:', response.status);
+
     const contentType = response.headers.get('content-type');
     const body = await response.text();
 
-    // Create response headers, excluding problematic headers for iframe
+    // Create response headers for iframe compatibility
     const responseHeaders = new Headers();
-    responseHeaders.set('Content-Type', contentType || 'text/html');
+    responseHeaders.set('Content-Type', contentType || 'text/html; charset=utf-8');
     responseHeaders.set('Access-Control-Allow-Origin', '*');
     responseHeaders.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     responseHeaders.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -70,46 +67,30 @@ export async function GET(request: NextRequest) {
       headers: responseHeaders,
     });
   } catch (error) {
-    console.error('Proxy error:', error);
-    return NextResponse.json({ error: 'Failed to fetch target URL' }, { status: 500 });
+    console.error('Preview proxy error:', error);
+    return NextResponse.json({ 
+      error: 'Failed to fetch preview content',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const targetUrl = searchParams.get('url');
-
-  if (!targetUrl) {
-    return NextResponse.json({ error: 'URL parameter is required' }, { status: 400 });
-  }
-
-  // Prevent circular reference
-  if (targetUrl.includes('/api/proxy')) {
-    return NextResponse.json({ error: 'Circular proxy reference detected' }, { status: 400 });
-  }
-
+  const path = searchParams.get('path') || '/';
+  const targetUrl = `https://nextjs-hydration-error-vercel-40x0pie45.vercel.app${path}`;
+  
   try {
     const body = await request.text();
     
-    // Forward all query parameters from the original request to the target URL
-    const originalUrl = new URL(request.url);
-    const targetUrlObj = new URL(targetUrl);
-    
-    // Copy all query parameters except 'url' to the target URL
-    originalUrl.searchParams.forEach((value, key) => {
-      if (key !== 'url') {
-        targetUrlObj.searchParams.set(key, value);
-      }
-    });
-
     // Create headers for the target request
     const targetHeaders = new Headers();
     targetHeaders.set('x-vercel-set-bypass-cookie', 'samesitenone');
     targetHeaders.set('Content-Type', request.headers.get('content-type') || 'application/json');
-    targetHeaders.set('User-Agent', request.headers.get('user-agent') || '');
-    targetHeaders.set('Accept', request.headers.get('accept') || '*/*');
-    targetHeaders.set('Accept-Language', request.headers.get('accept-language') || 'en-US,en;q=0.9');
-    targetHeaders.set('Accept-Encoding', request.headers.get('accept-encoding') || 'gzip, deflate, br');
+    targetHeaders.set('User-Agent', request.headers.get('user-agent') || 'Mozilla/5.0 (compatible; Builder.io/1.0)');
+    targetHeaders.set('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8');
+    targetHeaders.set('Accept-Language', 'en-US,en;q=0.5');
+    targetHeaders.set('Accept-Encoding', 'gzip, deflate, br');
     
     // Forward Builder.io specific headers
     const cookie = request.headers.get('cookie');
@@ -122,6 +103,14 @@ export async function POST(request: NextRequest) {
       targetHeaders.set('Referer', referer);
     }
 
+    // Add all Builder.io query parameters to the target URL
+    const targetUrlObj = new URL(targetUrl);
+    searchParams.forEach((value, key) => {
+      if (key !== 'path') {
+        targetUrlObj.searchParams.set(key, value);
+      }
+    });
+
     const response = await fetch(targetUrlObj.toString(), {
       method: 'POST',
       body,
@@ -131,9 +120,9 @@ export async function POST(request: NextRequest) {
     const contentType = response.headers.get('content-type');
     const responseBody = await response.text();
 
-    // Create response headers, excluding problematic headers for iframe
+    // Create response headers for iframe compatibility
     const responseHeaders = new Headers();
-    responseHeaders.set('Content-Type', contentType || 'text/html');
+    responseHeaders.set('Content-Type', contentType || 'text/html; charset=utf-8');
     responseHeaders.set('Access-Control-Allow-Origin', '*');
     responseHeaders.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     responseHeaders.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -148,8 +137,11 @@ export async function POST(request: NextRequest) {
       headers: responseHeaders,
     });
   } catch (error) {
-    console.error('Proxy error:', error);
-    return NextResponse.json({ error: 'Failed to fetch target URL' }, { status: 500 });
+    console.error('Preview proxy error:', error);
+    return NextResponse.json({ 
+      error: 'Failed to fetch preview content',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
 
