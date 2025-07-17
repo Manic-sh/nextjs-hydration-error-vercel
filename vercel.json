@@ -1,0 +1,17 @@
+{
+  "protectionBypass": {
+    "automation": {
+      "enabled": true,
+      "allowedUserAgents": [
+        "builder.io",
+        "Builder.io",
+        "cdn.builder.codes"
+      ],
+      "allowedReferrers": [
+        "https://builder.io",
+        "https://www.builder.io",
+        "https://cdn.builder.codes"
+      ]
+    }
+  }
+} 
