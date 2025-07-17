@@ -14,8 +14,12 @@
         {
           "key": "Access-Control-Allow-Headers",
           "value": "Content-Type, Authorization, x-vercel-protection-bypass, x-vercel-set-bypass-cookie"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "ALLOW-FROM https://builder.io"
         }
       ]
     }
   ]
-}
+} 
